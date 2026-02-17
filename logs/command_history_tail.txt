@@ -1,0 +1,200 @@
+ 1143      reader = csv.DictReader(f)
+ 1144      if "Genome ID" not in reader.fieldnames or "GenBank Accessions" not in reader.fieldnames:
+ 1145          raise SystemExit(f"CSV columns found: {reader.fieldnames} (expected 'Genome ID' and 'GenBank Accessions')")
+ 1146      for r in reader:
+ 1147          gid = r["Genome ID"].strip()
+ 1148          accs = r["GenBank Accessions"].strip().strip('"')
+ 1149          if not gid or not accs:
+ 1150              continue
+ 1151          acc_list = [a.strip() for a in accs.split(",") if a.strip()]
+ 1152          if not acc_list:
+ 1153              continue
+ 1154          rows.append((gid, acc_list))
+ 1155  # Detect duplicate Genome IDs and make unique filenames
+ 1156  gid_counts = Counter(g for g,_ in rows)
+ 1157  gid_seen = defaultdict(int)
+ 1158  ok_log = os.path.join(logdir, "genbank_download_ok.tsv")
+ 1159  fail_log = os.path.join(logdir, "genbank_download_fail.tsv")
+ 1160  with open(ok_log, "w") as ok, open(fail_log, "w") as fail:
+ 1161      ok.write("GenomeID\tAccessions\tOutputFile\n")
+ 1162      fail.write("GenomeID\tAccession\tReason\n")
+ 1163      for gid, acc_list in rows:
+ 1164          gid_seen[gid] += 1
+ 1165          tag = f"{gid}" if gid_seen[gid] == 1 else f"{gid}_dup{gid_seen[gid]}"
+ 1166          fname = safe_name(tag) + ".fasta"
+ 1167          outpath = os.path.join(outdir, fname)
+ 1168          # overwrite if exists (repeatable)
+ 1169          with open(outpath, "w") as out_f:
+ 1170              pass
+ 1171          any_success = False
+ 1172          for acc in acc_list:
+ 1173              # fetch fasta for each accession and append to isolate FASTA
+ 1174              cmd = ["efetch", "-db", "nuccore", "-id", acc, "-format", "fasta"]
+ 1175              try:
+ 1176                  res = subprocess.run(cmd, capture_output=True, text=True, check=False)
+ 1177                  if res.returncode != 0 or not res.stdout.strip():
+ 1178                      with open(fail_log, "a") as fail:
+ 1179                          fail.write(f"{gid}\t{acc}\tEfetch_failed\n")
+ 1180                  else:
+ 1181                      with open(outpath, "a") as out_f:
+ 1182                          out_f.write(res.stdout)
+ 1183                          if not res.stdout.endswith("\n"):
+ 1184                              out_f.write("\n")
+ 1185                      any_success = True
+ 1186              except Exception as e:
+ 1187                  with open(fail_log, "a") as fail:
+ 1188                      fail.write(f"{gid}\t{acc}\tException:{e}\n")
+ 1189              time.sleep(0.34)  # be nice to NCBI
+ 1190          if any_success:
+ 1191              with open(ok_log, "a") as ok:
+ 1192                  ok.write(f"{gid}\t{','.join(acc_list)}\t{outpath}\n")
+ 1193          else:
+ 1194              # remove empty file
+ 1195              try:
+ 1196                  os.remove(outpath)
+ 1197              except FileNotFoundError:
+ 1198                  pass
+ 1199  print(f"GenBank isolate FASTAs written to: {outdir}")
+ 1200  print(f"OK log:   {ok_log}")
+ 1201  print(f"FAIL log: {fail_log}")
+ 1202  PY
+ 1203  ls genomes_fasta/genbank_isolates | wc -l
+ 1204  cd ~/kp_liver_project
+ 1205  ls genomes_fasta
+ 1206  ls genomes_fasta/genbank_isolates 2>/dev/null
+ 1207  ps -u $USER | grep python
+ 1208  ls logs
+ 1209  ps -u $USER | grep python
+ 1210  genomes_fasta/genbank_isolates/
+ 1211  cd ~/kp_liver_project
+ 1212  mkdir -p genomes_fasta/all_genomes
+ 1213  # copy assemblies (GCA/GCF)
+ 1214  cp genomes_fasta/*.fna genomes_fasta/all_genomes/ 2>/dev/null
+ 1215  # copy GenBank isolate genomes
+ 1216  cp genomes_fasta/genbank_isolates/*.fasta genomes_fasta/all_genomes/ 2>/dev/null
+ 1217  echo "Total genomes in all_genomes:"
+ 1218  ls genomes_fasta/all_genomes | wc -l
+ 1219  ls
+ 1220  cd kp_liver_project/
+ 1221  ls
+ 1222  cd lists/
+ 1223  ls
+ 1224  cd ..
+ 1225  ls
+ 1226  cd ..
+ 1227  ls
+ 1228  cd research_project_old/
+ 1229  ls
+ 1230  cd Research-Project/
+ 1231  ls
+ 1232  cd ~/kp_liver_project
+ 1233  pwd
+ 1234  ls
+ 1235  ls -a
+ 1236  git init
+ 1237  mkdir -p scripts
+ 1238  nano scripts/01_edirect_download.sh
+ 1239  nano .gitignore
+ 1240  git add .gitignore lists/ scripts/
+ 1241  git commit -m "Track scripts and lists; ignore large outputs"
+ 1242  git status
+ 1243  git remote -v
+ 1244  git remote add origin git@github.com:YOURUSERNAME/kp_liver_project.git
+ 1245  git remote add origin git@github.com:k22017808/kp_liver_project.git
+ 1246  git remote -v
+ 1247  git remote set-url origin git@github.com:k22017808/kp_liver_project.git
+ 1248  git remote -v
+ 1249  git branch -M main
+ 1250  git push -u origin main
+ 1251  ssh -T git@github.com
+ 1252  ]ssh-keygen -t ed25519 -C maidaj14@gmail.com"
+ 1253  cat ~/.ssh/id_ed25519.pub
+ 1254  git config --global user.name "Maida Jajja"
+ 1255  git config --global user.email "maidaj14@gmail.com"
+ 1256  git config --global user.name "Maida Jajja"
+ 1257  git config --global user.email "maidaj14@gmail.com"
+ 1258  ssh -T git@github.com
+ 1259  ssh-keygen -t ed25519 -C "maidaj14@gmail.com"
+ 1260  eval "$(ssh-agent -s)"
+ 1261  ssh-add ~/.ssh/id_ed25519
+ 1262  cat ~/.ssh/id_ed25519.pub
+ 1263  cd ~/kp_liver_project
+ 1264  git remote set-url origin git@github.com:maidajajja/Research-Project.git
+ 1265  git remote -v
+ 1266  git branch -M main
+ 1267  git push -u origin main
+ 1268  eval "$(ssh-agent -s)"
+ 1269  ssh-add ~/.ssh/id_ed25519
+ 1270  ssh -T git@github.com
+ 1271  nano ~/.ssh/config
+ 1272  chmod 600 ~/.ssh/config
+ 1273  eval "$(ssh-agent -s)"
+ 1274  ssh-add ~/.ssh/id_ed25519
+ 1275  ssh -T git@github.com
+ 1276  cd ~/kp_liver_project
+ 1277  git push -u origin main
+ 1278  cat ~/.ssh/id_ed25519.pub
+ 1279  ssh -T git@github.com
+ 1280  cd ~/kp_liver_project
+ 1281  git status
+ 1282  git add lists/ scripts/ .gitignore
+ 1283  git add README.md config/ docs/
+ 1284  git push -u origin main
+ 1285  cd ~/kp_liver_project
+ 1286  git pull origin main --allow-unrelated-histories
+ 1287  git push -u origin main
+ 1288  cd ~/kp_liver_project
+ 1289  git pull --no-rebase origin main --allow-unrelated-histories
+ 1290  cd ~/kp_liver_project
+ 1291  git status
+ 1292  git commit
+ 1293  cd ~/kp_liver_project
+ 1294  git commit --no-edit
+ 1295  git push -u origin main
+ 1296  git config --global core.editor "nano"
+ 1297  cd ~/kp_liver_project
+ 1298  git commit --no-edit
+ 1299  git push -u origin main
+ 1300  git status
+ 1301  git pull --no-rebase origin main
+ 1302  git push -u origin main
+ 1303  git status
+ 1304  git log --oneline --decorate -5
+ 1305  cd ~/kp_liver_project
+ 1306  git push --force-with-lease origin main
+ 1307  cd ~/kp_liver_project
+ 1308  git pull
+ 1309  ls
+ 1310  nano README.md 
+ 1311  ls
+ 1312  cd lists/
+ 1313  ls
+ 1314  nano sra_list.txt 
+ 1315  nano assembly_list.txt 
+ 1316  nano biosample_list.txt 
+ 1317  nano assembly_list.txt 
+ 1318  nano biosample_list.txt 
+ 1319  nano genbank_acc.txt 
+ 1320  nano genebank_map
+ 1321  nano genbank_map.csv
+ 1322  cd ..
+ 1323  ls
+ 1324  cd assemblies/
+ 1325  ls
+ 1326  cd ..
+ 1327  cd scripts/
+ 1328  ls
+ 1329  cd ..
+ 1330  cd fastqc/
+ 1331  ls
+ 1332  cd ~/kp_liver_project
+ 1333  mkdir -p scripts metadata
+ 1334  nano scripts/01_download_assemblies.sh
+ 1335  [200~nano scripts/02_download_genbank_isolates.py
+ 1336  ~nano scripts/02_download_genbank_isolates.py
+ 1337  nano scripts/02_download_genbank_isolates.py
+ 1338  chmod +x scripts/02_download_genbank_isolates.py
+ 1339  nano scripts/03_make_all_genomes.sh
+ 1340  [200~chmod +x scripts/03_make_all_genomes.sh
+ 1341  chmod +x scripts/03_make_all_genomes.sh
+ 1342  history | tail -n 200 > logs/command_history_tail.txt

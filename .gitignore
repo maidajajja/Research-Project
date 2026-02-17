@@ -1,11 +1,12 @@
 # big data / outputs
-raw_reads/
 downloads/
-fastqc/
+raw_reads/
 spades/
 assemblies/
+fastqc/
 genomes_fasta/
-logs/
+logs/*.tsv
+logs/*.zip
 
 # misc
 *.swp
