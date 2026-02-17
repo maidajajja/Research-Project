@@ -1,0 +1,13 @@
+# big data / outputs
+raw_reads/
+downloads/
+fastqc/
+spades/
+assemblies/
+genomes_fasta/
+logs/
+
+# misc
+*.swp
+*~
+.DS_Store
