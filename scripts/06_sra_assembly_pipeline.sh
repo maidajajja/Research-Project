@@ -17,7 +17,7 @@
 set -e  # Exit on error
 
 # Activate conda environment
-source ~/.bashrc
+eval "$(conda shell.bash hook)"
 conda activate assembly_env
 
 # Load modules
