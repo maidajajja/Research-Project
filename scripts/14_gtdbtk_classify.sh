@@ -2,12 +2,14 @@
 #SBATCH --job-name=gtdbtk_classify
 #SBATCH --output=gtdbtk_classify_%j.out
 #SBATCH --error=gtdbtk_classify_%j.err
-#SBATCH --time=24:00:00
+#SBATCH --time=2-00:00:00
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=16
-#SBATCH --mem=200G
+#SBATCH --cpus-per-task=3
+#SBATCH --mem=11G
+#SBATCH --partition=msc_appbio
 
-source ~/.bashrc
+source /software/spackages_v0_21_prod/apps/linux-ubuntu22.04-zen2/gcc-13.2.0/anaconda3-2022.10-5wy43yh5crcsmws4afls5thwoskzarhe/etc/profile.d/conda.sh
+
 conda activate gtdbtk_env
 
 export GTDBTK_DATA_PATH="/scratch/users/k22017808/databases/gtdbtk"
@@ -18,6 +20,6 @@ gtdbtk classify_wf \
     --genome_dir /scratch/users/k22017808/KP_Research_Project/ALL_FNA_FILES \
     --extension fna \
     --out_dir /scratch/users/k22017808/KP_Research_Project/05_Taxonomy/GTDBTK \
-    --cpus 16
+    --cpus 3
 
 echo "GTDB-Tk classification complete!"
