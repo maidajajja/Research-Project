@@ -1,14 +1,7 @@
-# big data / outputs
-downloads/
-raw_reads/
-spades/
-assemblies/
-fastqc/
-genomes_fasta/
-logs/*.tsv
-logs/*.zip
-
-# misc
-*.swp
-*~
-.DS_Store
+logs/
+*.err
+*.out
+*.tar.gz
+*.tar.xz
+quast_test/
+quast_results/
