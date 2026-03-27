@@ -20,7 +20,7 @@ echo "Starting Kleborate at $(date)"
 
 kleborate \
     --assemblies "$FNADIR"/*.fna \
-    --outfile "$OUTDIR/kleborate_results.txt" \
+    --outdir "$OUTDIR" \
     --preset kpsc
 
 echo "Finished Kleborate at $(date)"
