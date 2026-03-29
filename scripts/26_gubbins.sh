@@ -9,7 +9,7 @@
 #SBATCH --error=/scratch/users/k22017808/KP_Research_Project/10_Gubbins/gubbins_%j.err
 
 source /software/spackages_v0_21_prod/apps/linux-ubuntu22.04-zen2/gcc-13.2.0/anaconda3-2022.10-5wy43yh5crcsmws4afls5thwoskzarhe/etc/profile.d/conda.sh
-conda activate gubbins_env
+conda activate iqtree_env
 
 OUTDIR=/scratch/users/k22017808/KP_Research_Project/10_Gubbins
 ALN=/scratch/users/k22017808/KP_Research_Project/06_Pangenome_alignment/core_gene_alignment.aln
@@ -19,10 +19,6 @@ cd "$OUTDIR"
 
 echo "Starting Gubbins at $(date)"
 
-run_gubbins.py \
-    --prefix kp_gubbins \
-    --threads 6 \
-    --tree-builder fasttree \
-    "$ALN"
+run_gubbins.py --prefix kp_gubbins --threads 6 "$ALN"
 
 echo "Finished Gubbins at $(date)"
