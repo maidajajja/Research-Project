@@ -1,6 +1,6 @@
 # Comparative Genomics of *Klebsiella pneumoniae* in Liver Disease Patients
 
-> MSc Applied Bioinformatics Dissertation | King's College London | 2025–2026
+> MSc Applied Bioinformatics Dissertation | King's College London | 2026
 > Supervisor: Dr Ellis Paintsil
 
 ---
@@ -138,15 +138,6 @@ All genomes confirmed as *Klebsiella pneumoniae* by FastANI (≥98.8% ANI) and K
 | `panaroo_env` | Panaroo, MAFFT |
 | `iqtree_env` | IQ-TREE, Gubbins |
 | `eggnog_env` | eggNOG-mapper (db download blocked) |
-
----
-
-## Notable Technical Details
-
-- Panaroo source code manually patched for Python 3.13 compatibility (Bio.Alphabet removal, rU mode fix, MAFFT subprocess handling)
-- Bakta source code patched to handle AMRFinder dependency crashes in HPC environment
-- gene_presence_absence.csv header reconstructed from Rtab output due to Panaroo Python 3.13 output bug
-- All scripts version controlled and submitted via SLURM
 
 ---
 
