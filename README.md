@@ -1,6 +1,6 @@
 # Comparative Genomics of *Klebsiella pneumoniae* in Liver Disease Patients
 
-> MSc Applied Bioinformatics Dissertation | King's College London | 2026
+> MSc Applied Bioinformatics | King's College London | 2026 |
 > Supervisor: Dr Ellis Paintsil
 
 ---
