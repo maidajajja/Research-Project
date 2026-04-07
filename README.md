@@ -1,157 +1,122 @@
-# Comparative Genomics of *Klebsiella pneumoniae* in Liver Disease Patients
+# Comparative Genomics and AMR Profiling of *Klebsiella pneumoniae* in Liver Disease Patients
 
-> MSc Applied Bioinformatics Dissertation | King's College London | 2025–2026
-> Supervisor: Dr Ellis Paintsil
-
----
-
-## Project Summary
-
-This repository contains the bioinformatics pipeline and analysis scripts for a comparative genomic study of **234 *Klebsiella pneumoniae* genomes** derived from liver disease patients. Using whole genome sequencing data sourced from NCBI GenBank and the Sequence Read Archive, this project characterises the population structure, antimicrobial resistance gene repertoire, virulence factor profiles, pan-genome diversity, and phylogenetic relationships of *K. pneumoniae* circulating in this clinically vulnerable patient group.
+**Author:** Maida Jajja  
+**Institution:** King's College London  
+**Programme:** MSc Applied Bioinformatics  
+**Supervisor:** Dr Ellis Paintsil  
+**Year:** 2024-2025  
 
 ---
 
-## Repository Structure
-```
-Research-Project/
-├── scripts/           # SLURM job submission scripts
-├── lists/             # Genome accession lists
-├── logs/              # Pipeline log files
-└── quast_results/     # Assembly quality assessment metrics
-```
+## Project Overview
+
+This project performs comparative genomics and antimicrobial resistance (AMR) profiling of 234 clinical *Klebsiella pneumoniae* genomes isolated from liver disease patients. The analysis spans quality control, genome assembly, annotation, phylogenetics, pan-genome analysis, AMR profiling, virulence characterisation, and plasmid detection.
 
 ---
 
-## Dataset
+## Repository Structure---
 
-| Source | Count | Format |
-|--------|-------|--------|
-| NCBI Assembly (GCA/GCF) | 152 | Pre-assembled FASTA |
-| NCBI SRA | 82 | Raw Illumina reads → assembled |
-| **Total** | **234** | *K. pneumoniae* genomes |
+## Pipeline Overview
 
-All genomes confirmed as *Klebsiella pneumoniae* by FastANI (≥98.8% ANI) and Kraken2.
+### 1. Quality Control
+- **Tool:** FastQC, fastp, QUAST
+- **Environment:** assembly_env
+- **Input:** Raw genome assemblies
+- **Output:** QC reports, filtered assemblies
 
----
-
-## Pipeline
-
-### 1. Data Acquisition
-| Step | Tool | Script |
-|------|------|--------|
-| Download NCBI assemblies | NCBI Datasets | `01_download_assemblies.sh` |
-| Download GenBank isolates | Custom Python | `02_download_genbank_isolates.py` |
-| Download additional assemblies | Custom Python | `05_download_genbank_genomes.py` |
-| Download new assemblies | Custom | `04_download_new_assemblies.sh` |
-| SRA assembly pipeline | SPAdes v3.15.5 | `06_sra_assembly_pipeline.sh` |
-
-### 2. Assembly Quality Control
-| Step | Tool | Script |
-|------|------|--------|
-| Assembly QC | QUAST | `07_quast_all_genomes.sh` |
-| Consolidate genomes | Custom | `03_make_all_genomes.sh` |
+### 2. Genome Assembly
+- **Tool:** SPAdes v3.15.5
+- **Environment:** assembly_env
+- **Output:** Assembled contigs
 
 ### 3. Genome Annotation
-| Step | Tool | Script |
-|------|------|--------|
-| Annotation batch 1 | Bakta v1.12.0 (light db) | `08_annotate_batch1_WORKED.sh` |
-| Annotation batch 2 | Bakta v1.12.0 (light db) | `09_annotate_batch2_WORKED.sh` |
-| Annotation batch 3 | Bakta v1.12.0 (light db) | `10_annotate_batch3_WORKED.sh` |
-| Annotation batch 4 | Bakta v1.12.0 (light db) | `11_annotate_batch4_WORKED.sh` |
-| Annotation FASTA genomes | Bakta v1.12.0 (light db) | `12_annotate_fasta_WORKED.sh` |
+- **Tool:** Bakta v1.12.0 (light database)
+- **Environment:** bakta_env
+- **Output:** GFF3, FFN, FAA, TSV annotation files
 
-### 4. Taxonomy & Sequence Typing
-| Step | Tool | Script |
-|------|------|--------|
-| Kraken2 database download | Kraken2 v2.1.2 | `15_kraken2_db_download.sh` |
-| k-mer classification | Kraken2 v2.1.2 | `16_kraken2_classify.sh` |
-| ANI-based classification | FastANI v1.34 | `17_fastani_classify.sh` |
-| Multi-locus sequence typing | MLST (PubMLST Klebsiella) | `22_mlst.sh` |
+### 4. Taxonomic Classification
+- **Tool:** FastANI v1.34, Kraken2 v2.1.2
+- **Environment:** mlst_env
+- **Output:** ANI values, taxonomic classifications
 
-### 5. Pan-genome & Phylogeny
-| Step | Tool | Script |
-|------|------|--------|
-| Pan-genome analysis | Panaroo v1.3.4 | `18_panaroo_pangenome.sh` |
-| Core genome alignment | Panaroo + MAFFT | `19_panaroo_alignment.sh` |
-| Phylogenetic tree | IQ-TREE v2 (GTR+G, 1000 bootstraps) | — |
-| Recombination analysis | Gubbins | `26_gubbins.sh` |
+### 5. MLST
+- **Tool:** MLST (PubMLST Klebsiella scheme)
+- **Environment:** mlst_env
+- **Output:** mlst_results.tsv — 53 distinct STs identified
 
-### 6. Resistome & Virulome
-| Step | Tool | Script |
-|------|------|--------|
-| AMR gene detection | AMRFinderPlus v4.2.7 | `23_amrfinder.sh` |
-| AMR screening (CARD + ResFinder) | ABRicate | `24_abricate.sh` |
-| Virulence + resistance scoring | Kleborate v3.2.4 (kpsc) | `25_kleborate.sh` |
+### 6. Pan-genome Analysis
+- **Tool:** Panaroo v1.3.4 (strict mode, MAFFT alignment)
+- **Environment:** panaroo_env
+- **Note:** Source code manually patched for Python 3.13 compatibility
+- **Output:** Core genome alignment, gene_presence_absence.csv
+- **Key results:** 23,699 total genes, 3,154 core genes (open pan-genome)
 
-### 7. Plasmid Analysis
-| Step | Tool | Script |
-|------|------|--------|
-| Plasmid classification | MOB-suite | `27_mobsuite.sh` |
-| Plasmid replicon identification | PlasmidFinder v2.1.6 | `29_plasmidfinder.sh` |
+### 7. Phylogenetics
+- **Tool:** IQ-TREE v2 (GTR+G model, 1000 bootstraps)
+- **Environment:** iqtree_env
+- **Input:** Panaroo core genome alignment (3.83 Mbp)
+- **Recombination removal:** Gubbins v3
+- **Output:** kp_core.treefile, visualised in iTOL
 
-### 8. Association Analysis
-| Step | Tool | Script |
-|------|------|--------|
-| Pan-genome gene association | Scoary v1.6.16 | `28_scoary.sh` |
+### 8. AMR Profiling
+- **Tool:** AMRFinderPlus v4.2.7 (--organism Klebsiella_pneumoniae)
+- **Tool:** ABRicate (CARD, ResFinder, VFDB databases)
+- **Environment:** amrfinder_env
+- **Key result:** blaSHV-11 in 131/234 isolates
 
-### 9. Analyses Blocked by HPC Constraints
-| Step | Tool | Reason |
-|------|------|--------|
-| Population structure | PopPUNK | glibc incompatibility on HPC |
-| Functional annotation | eggNOG-mapper | SSL network restriction on HPC |
+### 9. Virulence Characterisation
+- **Tool:** Kleborate v3.2.4 (kpsc preset)
+- **Environment:** kleborate_env
+- **Key result:** 61% isolates virulence score 4-5 (hypervirulent)
+- **Key result:** 20 convergent strains (high virulence + resistance)
 
----
+### 10. Plasmid Detection
+- **Tool:** PlasmidFinder v2.1.6, MOB-suite
+- **Environment:** mobsuite_env
+- **Key result:** 214/234 carry plasmids; IncHI1B dominant in ST23
 
-## Key Results
-
-| Metric | Value |
-|--------|-------|
-| Total genomes | 234 |
-| Sequence types identified | 20 |
-| Dominant lineage | ST23 (n=23, 9.8%) |
-| Core genome size | 3,154 genes |
-| Total pan-genome | 23,699 genes |
-| Hypervirulent isolates (score ≥4) | 142/234 (61%) |
-| Convergent strains (high virulence + resistance) | 20 |
-| ESBL gene (blaSHV-11) | 131/234 (56%) |
-| Plasmid carriage | 214/234 (91.5%) |
+### 11. Pan-genome Association
+- **Tool:** Scoary v1.6.16
+- **Environment:** mlst_env
 
 ---
 
-## HPC Environment
+## Conda Environments
+
+| Environment | Key Tools |
+|-------------|-----------|
+| assembly_env | SPAdes, FastQC, fastp, QUAST |
+| bakta_env | Bakta v1.12.0 |
+| mlst_env | MLST, ABRicate, Scoary |
+| amrfinder_env | AMRFinderPlus v4.2.7 |
+| kleborate_env | Kleborate v3.2.4 |
+| mobsuite_env | MOB-suite, PlasmidFinder, BLAST |
+| panaroo_env | Panaroo v1.3.4, MAFFT |
+| iqtree_env | IQ-TREE v2, Gubbins |
+| myRenv | R v4.3.1, ggplot2, ComplexHeatmap, pheatmap |
+
+---
+
+## HPC Configuration
 
 - **Cluster:** KCL CREATE HPC
 - **Scheduler:** SLURM
-- **Partition:** `msc_appbio` (6 CPUs, 22GB RAM, 2 jobs max)
-- **Working directory:** `/scratch/users/k22017808/KP_Research_Project/`
-
-### Conda Environments
-
-| Environment | Tools |
-|-------------|-------|
-| `assembly_env` | SPAdes |
-| `bakta_env` | Bakta |
-| `mlst_env` | MLST, ABRicate, Scoary, PopPUNK |
-| `amrfinder_env` | AMRFinderPlus |
-| `kleborate_env` | Kleborate |
-| `mobsuite_env` | MOB-suite, PlasmidFinder |
-| `panaroo_env` | Panaroo, MAFFT |
-| `iqtree_env` | IQ-TREE, Gubbins |
-| `eggnog_env` | eggNOG-mapper (db download blocked) |
+- **Partition:** msc_appbio
+- **Resources:** 6 CPUs, 22GB RAM, max 2 concurrent jobs
+- **Data location:** /scratch/users/k22017808/KP_Research_Project/
 
 ---
 
-## Notable Technical Details
+## Key Findings
 
-- Panaroo source code manually patched for Python 3.13 compatibility (Bio.Alphabet removal, rU mode fix, MAFFT subprocess handling)
-- Bakta source code patched to handle AMRFinder dependency crashes in HPC environment
-- gene_presence_absence.csv header reconstructed from Rtab output due to Panaroo Python 3.13 output bug
-- All scripts version controlled and submitted via SLURM
+1. ST23 is the dominant hypervirulent lineage (76/234 isolates)
+2. Open pan-genome confirmed (23,699 genes total, 3,154 core)
+3. blaSHV-11 most prevalent AMR gene (131/234 isolates)
+4. 20 convergent strains carrying both high virulence and resistance
+5. IncHI1B virulence plasmid predominantly in ST23 isolates
 
 ---
 
-## Author
+## Citation
 
-**Maida Jajja**
-MSc Applied Bioinformatics, King's College London
-GitHub: [@maidajajja](https://github.com/maidajajja)
+If using this pipeline, please cite the individual tools listed above.
