@@ -1,10 +1,15 @@
 # Comparative Genomics and AMR Profiling of *Klebsiella pneumoniae* in Liver Disease Patients
 
+<<<<<<< HEAD
 **Author:** Maida Jajja  
 **Institution:** King's College London  
 **Programme:** MSc Applied Bioinformatics  
 **Supervisor:** Dr Ellis Paintsil  
 **Year:** 2024-2025  
+=======
+> MSc Applied Bioinformatics | King's College London | 2026 |
+> Supervisor: Dr Ellis Paintsil
+>>>>>>> 54856f383bec2883b6db47f5dd931333446ddd47
 
 ---
 
@@ -107,6 +112,7 @@ This project performs comparative genomics and antimicrobial resistance (AMR) pr
 
 ---
 
+<<<<<<< HEAD
 ## Key Findings
 
 1. ST23 is the dominant hypervirulent lineage (76/234 isolates)
@@ -118,5 +124,8 @@ This project performs comparative genomics and antimicrobial resistance (AMR) pr
 ---
 
 ## Citation
+=======
+## Author
+>>>>>>> 54856f383bec2883b6db47f5dd931333446ddd47
 
 If using this pipeline, please cite the individual tools listed above.

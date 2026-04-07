@@ -24,7 +24,7 @@ for fna in "$FNADIR"/*.fna; do
     plasmidfinder.py \
         -i "$fna" \
         -o "$OUTDIR/${sample}" \
-        -p enterobacteriaceae \
+        -p /users/k22017808/.conda/envs/mobsuite_env/share/plasmidfinder-2.1.6/database \
         -l 0.60 \
         -t 0.95
 done
