@@ -3,7 +3,6 @@ suppressPackageStartupMessages({
   library(circlize)
   library(dplyr)
   library(tidyr)
-  library(RColorBrewer)
 })
 
 OUT <- "/scratch/users/k22017808/KP_Research_Project/plots"
@@ -53,6 +52,9 @@ amr_wide <- amr_filt %>% mutate(present=1) %>%
 rownames(amr_wide) <- amr_wide$Sample
 mat <- as.matrix(amr_wide[,-1])
 
+row_gene_counts <- rowSums(mat)
+mat <- mat[order(row_gene_counts, decreasing=TRUE), ]
+
 ann <- data.frame(Sample=rownames(mat), stringsAsFactors=FALSE) %>%
   left_join(st_map, by="Sample") %>%
   left_join(meta, by="Sample")
@@ -62,26 +64,23 @@ ann$Source[is.na(ann$Source)]   <- "Unknown"
 ann$Vir[is.na(ann$Vir)]         <- 0
 ann$Res[is.na(ann$Res)]         <- 0
 
-# ST colours — wide bar like supervisor
 top_sts <- names(sort(table(ann$ST[ann$ST!="Unknown"]), decreasing=TRUE))[1:7]
-st_pal  <- brewer.pal(7,"Set1")
-st_cols <- setNames(c(st_pal,"grey80","grey90"), c(top_sts,"Other","Unknown"))
+wong_pal <- c("#E69F00","#56B4E9","#009E73","#F0E442","#0072B2","#D55E00","#CC79A7")
+st_cols <- setNames(c(wong_pal,"grey80","grey90"), c(top_sts,"Other","Unknown"))
 ann$ST_group <- ifelse(ann$ST %in% top_sts, ann$ST,
                        ifelse(ann$ST=="Unknown","Unknown","Other"))
+ann <- ann[!is.na(ann$ST_group) & ann$ST_group != "NA", ]
+mat <- mat[rownames(mat) %in% ann$Sample, ]
+ann$ST_split <- factor(ann$ST_group, levels=c(top_sts,"Other","Unknown"))
 
-# Row split by top STs
-ann$ST_split <- factor(ann$ST_group,
-                       levels=c(top_sts[1:5],"Other","Unknown"))
-
-# Left annotation — ST as wide bar, virulence and resistance as continuous
 row_ann <- rowAnnotation(
   ST            = ann$ST_group,
   `Vir. Score`  = ann$Vir,
   `Res. Score`  = ann$Res,
   col = list(
     ST           = st_cols,
-    `Vir. Score` = colorRamp2(c(0,2,5), c("#F7FBFF","#6BAED6","#08306B")),
-    `Res. Score` = colorRamp2(c(0,1,3), c("#FFF5F0","#FB6A4A","#67000D"))
+    `Vir. Score` = colorRamp2(c(0,2,5), c("#FFF7BC","#FE9929","#CC4C02")),
+    `Res. Score` = colorRamp2(c(0,1,3), c("#EDF8FB","#66C2A4","#00441B"))
   ),
   annotation_name_gp = gpar(fontsize=9, fontface="bold"),
   annotation_width   = unit(c(0.8,0.4,0.4),"cm"),
@@ -100,11 +99,9 @@ ht <- Heatmap(mat,
   row_gap          = unit(3,"mm"),
   row_title_gp     = gpar(fontsize=9, fontface="bold"),
   row_title_rot    = 0,
-  column_title     = expression(italic("K. pneumoniae")~"AMR Gene Presence/Absence (n = 234)"),
-  column_title_gp  = gpar(fontsize=12, fontface="bold"),
-  clustering_distance_rows    = "binary",
+  column_title     = NULL,
+  cluster_rows     = FALSE,
   clustering_distance_columns = "binary",
-  clustering_method_rows      = "ward.D2",
   clustering_method_columns   = "ward.D2",
   rect_gp = gpar(col="white", lwd=0.3),
   heatmap_legend_param = list(
@@ -117,12 +114,10 @@ ht <- Heatmap(mat,
 
 png(file.path(OUT,"Fig2_AMR_heatmap.png"),
     width=13, height=14, units="in", res=300, bg="white")
-draw(ht, merge_legend=TRUE,
-     padding=unit(c(5,5,5,5),"mm"))
+draw(ht, merge_legend=TRUE, padding=unit(c(5,5,5,5),"mm"))
 dev.off()
 
-pdf(file.path(OUT,"Fig2_AMR_heatmap.pdf"),
-    width=13, height=14)
+pdf(file.path(OUT,"Fig2_AMR_heatmap.pdf"), width=13, height=14)
 draw(ht, merge_legend=TRUE)
 dev.off()
 

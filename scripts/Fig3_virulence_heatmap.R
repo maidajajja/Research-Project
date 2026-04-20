@@ -15,6 +15,18 @@ meta$Sample  <- as.character(meta[["Genome ID"]])
 meta$Source  <- meta[["Isolation Source"]]
 meta$Health  <- meta[["Host Health"]]
 meta$Source[is.na(meta$Source)|meta$Source==""] <- "Unknown"
+meta$Source <- dplyr::recode(meta$Source,
+  "liver abscess" = "Liver abscess",
+  "liver abscess drainage fluid" = "Drainage fluid",
+  "liver abscess puncture fluid" = "Drainage fluid",
+  "Liver abscess puncture fluid" = "Drainage fluid",
+  "hepatic abscess" = "Liver abscess",
+  "abscess drainage" = "Drainage fluid",
+  "liver" = "Liver",
+  "blood" = "Blood",
+  "Blood" = "Blood",
+  "liver drainage" = "Drainage fluid"
+)
 meta$Health[is.na(meta$Health)|meta$Health==""] <- "Unknown"
 meta <- meta[meta$Sample!="", c("Sample","Source","Health")]
 
@@ -70,11 +82,16 @@ ann$Vir[is.na(ann$Vir)]       <- 0
 ann$Res[is.na(ann$Res)]       <- 0
 
 top_sts <- names(sort(table(ann$ST[ann$ST!="Unknown"]), decreasing=TRUE))[1:7]
-st_pal  <- brewer.pal(7,"Set1")
+st_pal  <- c("#E69F00","#56B4E9","#009E73","#F0E442","#0072B2","#D55E00","#CC79A7")
 st_cols <- setNames(c(st_pal,"grey80","grey90"), c(top_sts,"Other","Unknown"))
 ann$ST_group <- ifelse(ann$ST %in% top_sts, ann$ST,
                        ifelse(ann$ST=="Unknown","Unknown","Other"))
-ann$ST_split <- factor(ann$ST_group, levels=c(top_sts[1:5],"Other","Unknown"))
+ann <- ann[!is.na(ann$ST_group) & ann$ST_group != "NA", ]
+mat <- mat[rownames(mat) %in% ann$Sample, ]
+row_gene_counts <- rowSums(mat)
+mat <- mat[order(row_gene_counts, decreasing=TRUE), ]
+ann <- ann[match(rownames(mat), ann$Sample), ]
+ann$ST_split <- factor(ann$ST_group, levels=c(top_sts,"Other","Unknown"))
 
 top_sources <- names(sort(table(ann$Source), decreasing=TRUE))[1:5]
 ann$Src_group <- ifelse(ann$Source %in% top_sources, ann$Source, "Other")
@@ -91,7 +108,7 @@ row_ann <- rowAnnotation(
   Source       = ann$Src_group,
   col = list(
     ST           = st_cols,
-    `Vir. Score` = colorRamp2(c(0,2,5), c("#F7FBFF","#6BAED6","#08306B")),
+    `Vir. Score` = colorRamp2(c(0,2,5), c("#FFF7BC","#FE9929","#CC4C02")),
     Source       = src_cols
   ),
   annotation_name_gp = gpar(fontsize=9, fontface="bold"),
@@ -110,8 +127,7 @@ ht <- Heatmap(mat,
   row_gap          = unit(3,"mm"),
   row_title_gp     = gpar(fontsize=9, fontface="bold"),
   row_title_rot    = 0,
-  column_title     = expression(italic("K. pneumoniae")~"Virulence Determinants (n = 234)"),
-  column_title_gp  = gpar(fontsize=12, fontface="bold"),
+  column_title     = NULL,
   clustering_distance_rows    = "binary",
   clustering_distance_columns = "binary",
   clustering_method_rows      = "ward.D2",
