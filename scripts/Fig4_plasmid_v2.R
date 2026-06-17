@@ -51,7 +51,7 @@ plasmid_st$Plasmid <- factor(plasmid_st$Plasmid,
   levels=names(sort(tapply(plasmid_st$n, plasmid_st$Plasmid, sum))))
 
 # Count per plasmid per Country
-top_countries <- names(sort(table(df_filt$Country), decreasing=TRUE))[1:6]
+top_countries <- names(sort(table(df_filt$Country[df_filt$Country != "Unknown" & !is.na(df_filt$Country)]), decreasing=TRUE))[1:6]
 df_country <- df_filt[df_filt$Country %in% top_countries, ]
 plasmid_country <- df_country %>%
   group_by(Country, Plasmid) %>%
@@ -61,7 +61,7 @@ plasmid_country$Plasmid <- factor(plasmid_country$Plasmid,
   levels=names(sort(tapply(plasmid_country$n, plasmid_country$Plasmid, sum))))
 
 # ST colours
-st_pal <- brewer.pal(7,"Set1")
+st_pal <- c("#E69F00","#56B4E9","#009E73","#F0E442","#0072B2","#D55E00","#CC79A7")
 st_cols <- setNames(c(st_pal,"grey80"), c(top_sts,"Other"))
 
 # Country colours
@@ -69,7 +69,6 @@ cty_cols <- setNames(colorRampPalette(brewer.pal(6,"Set2"))(length(top_countries
 
 pub_theme <- theme_classic(base_size=13) +
   theme(plot.title=element_text(face="bold", size=13, hjust=0.5),
-        plot.subtitle=element_text(size=10, hjust=0.5, colour="grey40"),
         axis.title=element_text(face="bold", size=12),
         axis.text=element_text(size=10, colour="grey20"),
         axis.text.y=element_text(face="italic"),
@@ -82,9 +81,7 @@ figA <- ggplot(plasmid_st, aes(x=n, y=Plasmid, fill=ST_group)) +
   geom_col(width=0.7, colour="white", linewidth=0.3) +
   scale_fill_manual(values=st_cols, name="Sequence Type") +
   scale_x_continuous(expand=expansion(mult=c(0,0.1))) +
-  labs(title=expression(italic("K. pneumoniae")~"Plasmid Replicon Distribution by ST"),
-       subtitle="Top 15 plasmid types; coloured by lineage (PlasmidFinder v2.1.6)",
-       x="Number of Isolates", y="Plasmid Replicon Type") +
+  labs(x="Number of Isolates", y="Plasmid Replicon Type") +
   pub_theme
 
 # Panel B: by Country (heatmap style like supervisor)
@@ -93,12 +90,9 @@ figB <- ggplot(plasmid_country, aes(x=Plasmid, y=Country, fill=n)) +
   scale_fill_gradientn(
     colours=c("#440154","#3B528B","#21908C","#5DC863","#FDE725"),
     name="No. isolates") +
-  labs(title=expression(italic("K. pneumoniae")~"Plasmid Distribution by Country"),
-       subtitle="Top 15 plasmid types x top 6 countries (PlasmidFinder v2.1.6)",
-       x="Plasmid Replicon Type", y="Isolation Country") +
+  labs(x="Plasmid Replicon Type", y="Isolation Country") +
   theme_classic(base_size=13) +
   theme(plot.title=element_text(face="bold", size=13, hjust=0.5),
-        plot.subtitle=element_text(size=10, hjust=0.5, colour="grey40"),
         axis.title=element_text(face="bold", size=12),
         axis.text=element_text(size=10, colour="grey20"),
         axis.text.x=element_text(angle=45, hjust=1, face="italic"),
