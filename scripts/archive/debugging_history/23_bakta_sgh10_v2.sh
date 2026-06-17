@@ -1,0 +1,22 @@
+#!/bin/bash
+#SBATCH --job-name=bakta_sgh10
+#SBATCH --output=logs/bakta_sgh10_%j.out
+#SBATCH --error=logs/bakta_sgh10_%j.err
+#SBATCH --time=10:00:00
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=32G
+#SBATCH --partition=interruptible_cpu
+
+source /software/spackages_v0_21_prod/apps/linux-ubuntu22.04-zen2/gcc-13.2.0/anaconda3-2022.10-5wy43yh5crcsmws4afls5thwoskzarhe/etc/profile.d/conda.sh
+conda activate bakta_env
+cd /scratch/users/k22017808/kp_liver_project/bakta-1.12.0
+
+OUTDIR="/scratch/users/k22017808/KP_Research_Project/04_Annotations/kp_annotations/batch5"
+mkdir -p $OUTDIR
+
+genome="/scratch/users/k22017808/KP_Research_Project/ALL_FNA_FILES/GCA_002813595.1_ASM281359v1_genomic.fna"
+basename=$(basename $genome .fna)
+
+./bin/bakta --db /scratch/users/k22017808/kp_liver_project/db-light --output $OUTDIR/$basename --prefix $basename --skip-crispr --skip-trna --skip-tmrna --skip-rrna --skip-ncrna --skip-ncrna-region --skip-sorf --skip-ori --skip-gap --skip-plot --threads 8 $genome
+
+echo "Bakta annotation complete for SGH10"

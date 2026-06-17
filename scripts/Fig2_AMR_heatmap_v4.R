@@ -29,7 +29,7 @@ kleb <- read.table("/scratch/users/k22017808/KP_Research_Project/09_Kleborate/kl
 st_col  <- grep("mlst__ST", colnames(kleb), value=TRUE)[1]
 vir_col <- grep("virulence_score__virulence_score", colnames(kleb), value=TRUE)[1]
 res_col <- grep("resistance_score__resistance_score", colnames(kleb), value=TRUE)[1]
-kleb$ST  <- gsub("-.*","", kleb[[st_col]])
+kleb$ST  <- gsub("ST", "", gsub("-.*","", kleb[[st_col]]))
 kleb$Vir <- suppressWarnings(as.numeric(kleb[[vir_col]]))
 kleb$Res <- suppressWarnings(as.numeric(kleb[[res_col]]))
 st_map <- data.frame(Sample=kleb$strain, ST=kleb$ST,
