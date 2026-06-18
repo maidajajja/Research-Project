@@ -12,7 +12,6 @@ kleb <- read.table("/scratch/users/k22017808/KP_Research_Project/09_Kleborate/kl
                    sep="\t", header=TRUE, stringsAsFactors=FALSE, quote="")
 st_col <- grep("mlst__ST", colnames(kleb), value=TRUE)[1]
 kleb$ST <- gsub("-.*","", kleb[[st_col]])
-kleb$ST <- sub("^ST", "", kleb$ST)
 kleb$ST[kleb$ST==""] <- NA
 
 meta <- read.csv("/scratch/users/k22017808/KP_Research_Project/genomes.csv",
