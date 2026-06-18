@@ -109,6 +109,10 @@ ann$ST[is.na(ann$ST)] <- "Unknown"
 ann$Source[is.na(ann$Source)] <- "Unknown"
 ann$Vir[is.na(ann$Vir)] <- 0
 
+cat("DIAGNOSTIC - ann$Source table right before plotting:\n")
+print(table(ann$Source))
+cat("\n")
+
 top_sts <- names(sort(table(ann$ST[ann$ST!="Unknown"]), decreasing=TRUE))[1:7]
 wong_pal <- c("#E69F00","#56B4E9","#009E73","#F0E442","#0072B2","#D55E00","#CC79A7")
 st_cols <- setNames(c(wong_pal,"grey80"), c(top_sts,"Other"))
