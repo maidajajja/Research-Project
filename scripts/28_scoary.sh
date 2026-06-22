@@ -2,8 +2,8 @@
 #SBATCH --job-name=scoary_kp
 #SBATCH --partition=msc_appbio
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=6
-#SBATCH --mem=20G
+#SBATCH --cpus-per-task=2
+#SBATCH --mem=8G
 #SBATCH --time=04:00:00
 #SBATCH --output=/scratch/users/k22017808/KP_Research_Project/12_Scoary/scoary_%j.out
 #SBATCH --error=/scratch/users/k22017808/KP_Research_Project/12_Scoary/scoary_%j.err
