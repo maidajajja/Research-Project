@@ -8,7 +8,7 @@ suppressPackageStartupMessages({
 OUT <- "/scratch/users/k22017808/KP_Research_Project/plots"
 dir.create(OUT, showWarnings=FALSE)
 
-amr <- read.table("/scratch/users/k22017808/KP_Research_Project/08_AMR/AMRFinder/amrfinder_all_withsample.tsv",
+amr <- read.table("/scratch/users/k22017808/KP_Research_Project/08_AMR/AMRFinder_final229/amrfinder_all_final229.tsv",
                   sep="\t", header=TRUE, stringsAsFactors=FALSE, fill=TRUE, quote="")
 amr$Accession <- sub("^(GC[AF]_[0-9]+\\.[0-9]+).*","\\1", amr$Sample)
 amr$Accession <- ifelse(grepl("^GC[AF]_", amr$Sample), amr$Accession, amr$Sample)
