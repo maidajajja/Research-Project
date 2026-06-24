@@ -8,7 +8,7 @@ dir.create(OUT, showWarnings=FALSE)
 pg <- data.frame(
   Category = factor(c("Core (>=99%)", "Soft core (95-99%)", "Shell (15-95%)", "Cloud (<15%)"),
                     levels=c("Core (>=99%)", "Soft core (95-99%)", "Shell (15-95%)", "Cloud (<15%)")),
-  Genes = c(3154, 918, 1604, 18023),
+  Genes = c(3769, 368, 1558, 8356),
   Fill = c("#1A5276","#2E86C1","#E67E22","#C0392B")
 )
 pg$Pct <- round(pg$Genes / sum(pg$Genes) * 100, 1)
@@ -29,7 +29,7 @@ fig6a <- ggplot(pg, aes(x=Category, y=Genes, fill=Fill)) +
         panel.grid.major.y=element_line(colour="grey92", linewidth=0.4),
         plot.margin=margin(10,20,10,10))
 
-rtab_path <- "/scratch/users/k22017808/KP_Research_Project/06_Pangenome/gene_presence_absence.Rtab"
+rtab_path <- "/scratch/users/k22017808/KP_Research_Project/06_Pangenome_final229/gene_presence_absence.Rtab"
 rtab <- read.table(rtab_path, sep="\t", header=TRUE, stringsAsFactors=FALSE, check.names=FALSE)
 gene_freq <- rowSums(rtab[,-1])
 freq_df <- data.frame(freq=gene_freq / 234 * 100)

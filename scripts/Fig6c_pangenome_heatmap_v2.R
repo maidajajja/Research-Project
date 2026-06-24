@@ -8,7 +8,7 @@ OUT <- "/scratch/users/k22017808/KP_Research_Project/plots"
 dir.create(OUT, showWarnings=FALSE)
 
 # Load Rtab
-rtab <- read.table("/scratch/users/k22017808/KP_Research_Project/06_Pangenome/gene_presence_absence.Rtab",
+rtab <- read.table("/scratch/users/k22017808/KP_Research_Project/06_Pangenome_final229/gene_presence_absence.Rtab",
                    sep="\t", header=TRUE, stringsAsFactors=FALSE, check.names=FALSE)
 rownames(rtab) <- rtab[,1]
 rtab <- rtab[,-1]
