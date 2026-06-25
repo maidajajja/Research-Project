@@ -46,10 +46,10 @@ df <- df[!is.na(df$ST) & !is.na(df$Year) & df$Year > 2000, ]
 df <- df[!is.na(df$Country) & df$Country != "" &
          df$Country != "NA" & df$Country != "Unknown", ]
 
-top_sts <- names(sort(table(df$ST), decreasing=TRUE))[1:10]
+top_sts <- c("23","11","86","258","65","29","512")
 st_labels <- paste0("ST", top_sts)
 
-cbf_pal <- c("#E69F00","#56B4E9","#009E73","#F0E442","#0072B2",
+cbf_pal <- c("#774411","#225522","#CC99BB","#332288","#EE8866","#AAAA00","#77AADD",
              "#D55E00","#CC79A7","#4D4D4D","#888888","#44AA99")
 st_cols <- setNames(cbf_pal[1:length(st_labels)], st_labels)
 
