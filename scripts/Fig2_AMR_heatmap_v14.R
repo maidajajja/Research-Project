@@ -173,7 +173,7 @@ top_ann <- HeatmapAnnotation(
 right_ann <- rowAnnotation(
   `No. acquired\nAMR genes` = anno_barplot(
     total_acquired,
-    gp = gpar(fill=ifelse(total_acquired == 0, "grey90", "#5b5b5b"), col=NA),
+    gp = gpar(fill=ifelse(total_acquired == 0, "grey90", "#333333"), col=NA),
     width = unit(25, "mm"),
     ylim = c(0, max_acquired),
     axis_param = list(
@@ -190,7 +190,6 @@ hh_cols <- c(
   "Liver abscess"            = "#994455",
   "Liver transplant"         = "#4477AA",
   "Other liver disease"      = "#228833",
-  "Non-liver or unspecified" = "#887799",
   "Unknown"                  = "#DDDDDD"
 )
 pa2$HH <- factor(pa2$HH, levels=names(hh_cols))
@@ -217,7 +216,7 @@ fig_height <- max(14, n_rows * 0.09 + 5)
 ht <- Heatmap(
   mat,
   name = "AMR gene",
-  col = c("0"="grey96", "1"="#5b5b5b"),
+  col = c("0"="grey96", "1"="#333333"),
   rect_gp = gpar(col="white", lwd=0.8),
   top_annotation = top_ann,
   row_split = split_vec,
@@ -244,7 +243,7 @@ ht <- Heatmap(
     title = "AMR gene",
     labels = c("Absent","Present"),
     at = c(0,1),
-    legend_gp = gpar(fill=c("grey96","#5b5b5b")),
+    legend_gp = gpar(fill=c("grey96","#333333")),
     title_gp = gpar(fontsize=9, fontface="bold"),
     labels_gp = gpar(fontsize=8)),
   border = TRUE,

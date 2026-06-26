@@ -125,7 +125,6 @@ hh_cols <- c(
   "Liver abscess"            = "#994455",
   "Liver transplant"         = "#4477AA",
   "Other liver disease"      = "#228833",
-  "Non-liver or unspecified" = "#887799",
   "Unknown"                  = "#DDDDDD")
 kd$HH <- factor(kd$HH, levels=names(hh_cols))
 
