@@ -63,19 +63,23 @@ meta_hh <- bind_rows(meta_hh, gca_rows) %>% distinct(key, .keep_all=TRUE)
 kleb <- left_join(kleb, meta_hh, by=c("meta_key"="key"))
 kleb$HH[is.na(kleb$HH)] <- "Unknown"
 
+# ALL 229 isolates - use ST grouping
 top_sts <- c("ST23","ST11","ST65","ST86","ST29","ST258","ST512")
 kd_top <- kleb %>% filter(ST %in% top_sts)
 kd_other <- kleb %>% filter(!ST %in% top_sts)
+
+# Order within each ST by virulence score
 kd_top$ST_group <- factor(kd_top$ST, levels=top_sts)
 kd_top <- kd_top %>% arrange(ST_group, desc(vir_score))
 kd_other <- kd_other %>% arrange(desc(vir_score))
 kd_other$ST_group <- "Other"
+
 kd <- bind_rows(kd_top, kd_other)
 all_levels <- c(top_sts, "Other")
 kd$ST_group <- factor(kd$ST_group, levels=all_levels)
 split_vec <- factor(as.character(kd$ST_group), levels=all_levels)
 
-st_counts <- table(split_vec)
+st_counts <- c(ST23=76, ST11=21, ST65=9, ST86=22, ST29=8, ST258=9, ST512=6, Other=100)
 st_labels <- paste0(all_levels, " (n=", st_counts[all_levels], ")")
 names(st_labels) <- all_levels
 
@@ -86,12 +90,12 @@ rownames(mat) <- kd$strain
 loci_intact    <- colSums(mat == 2) / nrow(mat) * 100
 loci_truncated <- colSums(mat == 1) / nrow(mat) * 100
 
-# Top annotation - NO right annotation label near top to avoid overlap
+# Top annotation
 top_ann <- HeatmapAnnotation(
   `Prevalence\n(%)` = anno_barplot(
     cbind(loci_intact, loci_truncated),
     gp = gpar(fill=c("#4477AA","#88BBDD"), col=NA),
-    height = unit(20,"mm"),
+    height = unit(20, "mm"),
     ylim = c(0,100),
     axis_param = list(
       side="left", gp=gpar(fontsize=7),
@@ -100,19 +104,19 @@ top_ann <- HeatmapAnnotation(
   annotation_name_gp = gpar(fontsize=8, fontface="bold"),
   show_legend = FALSE)
 
-# hvKP as right annotation — label at BOTTOM not top
+# Right annotation - hvKP only, label at top to avoid overlap
 hvkp_cols <- c("hvKP"="#EE8866", "Non-hvKP"="grey92")
 kd$hvKP <- factor(kd$hvKP, levels=names(hvkp_cols))
 
 right_ann <- rowAnnotation(
-  `hvKP\n(score>=4)` = kd$hvKP,
-  col = list(`hvKP\n(score>=4)` = hvkp_cols),
-  annotation_name_gp = gpar(fontsize=7, fontface="bold"),
-  annotation_name_side = "bottom",
+  `hvKP` = kd$hvKP,
+  col = list(`hvKP` = hvkp_cols),
+  annotation_name_gp = gpar(fontsize=8, fontface="bold"),
+  annotation_name_side = "top",
   annotation_name_rot = 0,
-  simple_anno_size = unit(5,"mm"),
+  simple_anno_size = unit(5, "mm"),
   annotation_legend_param = list(
-    title = "hvKP\n(score>=4)",
+    title = "hvKP status\n(score>=4)",
     title_gp = gpar(fontsize=9, fontface="bold"),
     labels_gp = gpar(fontsize=8),
     labels = c("hvKP","Non-hvKP")))
@@ -125,6 +129,7 @@ hh_cols <- c(
   "Liver abscess"            = "#994455",
   "Liver transplant"         = "#4477AA",
   "Other liver disease"      = "#228833",
+  "Non-liver or unspecified" = "#887799",
   "Unknown"                  = "#DDDDDD")
 kd$HH <- factor(kd$HH, levels=names(hh_cols))
 
@@ -134,18 +139,19 @@ row_ann <- rowAnnotation(
   col = list(ST=st_cols, `Host Health`=hh_cols),
   annotation_name_gp = gpar(fontsize=9, fontface="bold"),
   annotation_name_side = "bottom",
-  simple_anno_size = unit(5,"mm"),
-  gap = unit(2,"mm"),
+  simple_anno_size = unit(5, "mm"),
+  gap = unit(2, "mm"),
   annotation_legend_param = list(
     title_gp = gpar(fontsize=9, fontface="bold"),
     labels_gp = gpar(fontsize=8)))
 
 n_rows <- nrow(mat)
+cat("Total isolates:", n_rows, "\n")
 
 ht <- Heatmap(
   mat,
   name = "Virulence locus",
-  col = c("0"="grey96","1"="#88BBDD","2"="#4477AA"),
+  col = c("0"="grey96", "1"="#88BBDD", "2"="#4477AA"),
   rect_gp = gpar(col="white", lwd=0.5),
   top_annotation = top_ann,
   row_split = split_vec,
@@ -153,7 +159,7 @@ ht <- Heatmap(
   cluster_row_slices = FALSE,
   cluster_columns = FALSE,
   show_row_names = FALSE,
-  width = unit(6*15,"mm"),
+  width = unit(6*15, "mm"),
   column_names_side = "top",
   column_names_gp = gpar(fontsize=10, fontface="bold.italic"),
   column_names_rot = 30,
@@ -161,13 +167,16 @@ ht <- Heatmap(
   row_title = st_labels[all_levels],
   row_title_gp = gpar(fontsize=9, fontface="bold"),
   row_title_rot = 0,
-  row_gap = unit(3,"mm"),
-  height = unit(n_rows * 1.5,"mm"),
+  row_gap = unit(3, "mm"),
+  # Key fix: 1.5mm per row keeps total height reasonable
+  height = unit(n_rows * 1.5, "mm"),
   left_annotation = row_ann,
   right_annotation = right_ann,
   heatmap_legend_param = list(
     title = "Virulence locus",
-    labels = c("Absent","Truncated/incomplete\n(reduced function)","Intact"),
+    labels = c("Absent",
+               "Truncated/incomplete",
+               "Intact"),
     at = c(0,1,2),
     legend_gp = gpar(fill=c("grey96","#88BBDD","#4477AA")),
     title_gp = gpar(fontsize=9, fontface="bold"),
@@ -176,15 +185,15 @@ ht <- Heatmap(
   border_gp = gpar(col="grey85", lwd=0.3),
   use_raster = TRUE)
 
-png(file.path(OUT,"Fig3a_virulence_heatmap_v2.png"),
+png(file.path(OUT,"FigS3_virulence_heatmap_v2.png"),
     width=10, height=16, units="in", res=300)
 draw(ht, merge_legend=TRUE,
      padding=unit(c(8,12,8,15),"mm"),
      background="white")
 dev.off()
 
-pdf(file.path(OUT,"Fig3a_virulence_heatmap_v2.pdf"), width=10, height=16)
+pdf(file.path(OUT,"FigS3_virulence_heatmap_v2.pdf"), width=10, height=16)
 draw(ht, merge_legend=TRUE, padding=unit(c(8,12,8,15),"mm"))
 dev.off()
 
-message(paste0("Fig3a v2 saved - ", n_rows, " isolates"))
+message(paste0("Fig3a saved - ", n_rows, " isolates, 1.5mm row height"))
