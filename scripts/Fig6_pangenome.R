@@ -32,7 +32,7 @@ fig6a <- ggplot(pg, aes(x=Category, y=Genes, fill=Fill)) +
 rtab_path <- "/scratch/users/k22017808/KP_Research_Project/06_Pangenome_final229/gene_presence_absence.Rtab"
 rtab <- read.table(rtab_path, sep="\t", header=TRUE, stringsAsFactors=FALSE, check.names=FALSE)
 gene_freq <- rowSums(rtab[,-1])
-freq_df <- data.frame(freq=gene_freq / 234 * 100)
+freq_df <- data.frame(freq=gene_freq / 229 * 100)
 
 fig6b <- ggplot(freq_df, aes(x=freq)) +
   geom_histogram(binwidth=5, fill="#2E86C1", colour="white", linewidth=0.2) +

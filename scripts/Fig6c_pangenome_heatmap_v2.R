@@ -63,7 +63,7 @@ sample_st <- sapply(sample_ids, function(s){
 })
 
 top_sts <- names(sort(table(sample_st[sample_st!="Unknown"]),
-                      decreasing=TRUE))[1:8]
+                      decreasing=TRUE))[1:7]
 sample_st_group <- ifelse(sample_st %in% top_sts,
                           paste0("ST",sample_st), "Other")
 
@@ -78,8 +78,7 @@ sample_st_ord <- sample_st_group[sample_order]
 mat_t <- t(mat_ord)
 
 # CBF colours
-cbf_pal <- c("#E69F00","#56B4E9","#009E73","#F0E442","#0072B2",
-             "#D55E00","#CC79A7","#4D4D4D","grey75")
+cbf_pal <- c("#774411","#225522","#CC99BB","#332288","#EE8866","#AAAA00","#77AADD","#BBBBBB","grey75")
 st_levels <- c(paste0("ST",top_sts),"Other")
 st_cols <- setNames(cbf_pal[1:length(st_levels)], st_levels)
 
@@ -133,11 +132,11 @@ ht <- Heatmap(mat_t,
 )
 
 png(file.path(OUT,"Fig6c_pangenome_heatmap.png"),
-    width=16, height=10, units="in", res=600, bg="white")
+    width=14, height=8, units="in", res=300, bg="white")
 draw(ht, merge_legend=TRUE, padding=unit(c(5,5,5,5),"mm"))
 dev.off()
 
-pdf(file.path(OUT,"Fig6c_pangenome_heatmap.pdf"), width=16, height=10)
+pdf(file.path(OUT,"Fig6c_pangenome_heatmap.pdf"), width=14, height=8)
 draw(ht, merge_legend=TRUE)
 dev.off()
 
