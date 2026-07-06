@@ -68,6 +68,8 @@ scripts/                   Final pipeline and figure scripts
 scripts/archive/           Intermediate versions retained for reproducibility
 FINAL_FIGURES/             Publication-quality figures (PNG and PDF)
 genomes_master.csv         Definitive metadata file
+iTOL/final/                 Definitive iTOL annotation files for phylogenetic tree
+iTOL/archive/               Old iTOL versions retained for reproducibility
 
 ---
 
