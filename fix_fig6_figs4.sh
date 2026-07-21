@@ -1,3 +1,43 @@
+#!/usr/bin/env bash
+# Fixes a real renumbering mismatch found between the repo and the actual dissertation.
+# Run from the repo root (same place as the previous fix scripts).
+#
+# What happened: the ST-grouped pan-genome heatmap (core/soft-core/shell by lineage)
+# is cited in your dissertation as "Figure S4" - but in the repo/scripts it was still
+# named "Fig6c". That freed-up "Fig6c" slot is actually where your accumulation curve
+# belongs (your Results 3.6 caption already says "Figure 6c. Pan-genome and core genome
+# accumulation curves...") - but the repo had that file named "Fig6d" instead.
+#
+# This script:
+#   1. Renames the ST-grouped heatmap script + FINAL_FIGURES output from Fig6c -> FigS4
+#      (and fixes the internal png()/pdf() save-name strings inside the script itself)
+#   2. Renames the accumulation curve from Fig6d -> Fig6c inside Fig6_pangenome_v3.R
+#      (internal ggsave() strings) and in FINAL_FIGURES/
+#   3. Updates the README's Final Figure Scripts table to match
+#
+# Does NOT commit or push - review with git status / git diff --cached --stat first.
+
+set -euo pipefail
+
+if [ ! -f "README.md" ] || [ ! -d "scripts/figures" ]; then
+  echo "Run this from the repo root." >&2
+  exit 1
+fi
+
+echo "== 1. Renaming ST-grouped heatmap: Fig6c -> FigS4 =="
+git mv scripts/figures/Fig6c_pangenome_heatmap_v4.R scripts/figures/FigS4_pangenome_heatmap_v4.R
+sed -i 's/Fig6c_pangenome_heatmap_v4/FigS4_pangenome_heatmap_v4/g' scripts/figures/FigS4_pangenome_heatmap_v4.R
+git mv FINAL_FIGURES/Fig6c_pangenome_heatmap_FINAL.png FINAL_FIGURES/FigS4_pangenome_heatmap_FINAL.png
+git mv FINAL_FIGURES/Fig6c_pangenome_heatmap_FINAL.pdf FINAL_FIGURES/FigS4_pangenome_heatmap_FINAL.pdf
+
+echo "== 2. Renaming accumulation curve: Fig6d -> Fig6c (matches your Results 3.6 caption) =="
+sed -i 's/Fig6d_pangenome_accumulation_v3/Fig6c_pangenome_accumulation_v3/g' scripts/figures/Fig6_pangenome_v3.R
+git mv FINAL_FIGURES/Fig6d_pangenome_accumulation_FINAL.png FINAL_FIGURES/Fig6c_pangenome_accumulation_FINAL.png
+git mv FINAL_FIGURES/Fig6d_pangenome_accumulation_FINAL.pdf FINAL_FIGURES/Fig6c_pangenome_accumulation_FINAL.pdf
+
+echo "== 3. Updating README =="
+rm -f README.md
+cat > README.md << 'README_EOF'
 # Comparative Genomics and AMR Profiling of Klebsiella pneumoniae in Liver Disease Patients
 
 ## Project Overview
@@ -136,3 +176,12 @@ KCL CREATE HPC cluster (`/scratch/users/k22017808/KP_Research_Project/FINAL_FIGU
 Cluster: KCL CREATE HPC (hpc.create.kcl.ac.uk)
 Partition: msc_appbio
 Conda environments: myRenv (R packages), kleborate_env (Kleborate) - see `environment/` for full YAMLs
+README_EOF
+
+git add -A
+
+echo ""
+echo "Done. Review with:  git status   and   git diff --cached --stat"
+echo "Then commit, e.g.:"
+echo "  git commit -m \"Fix Fig6c/Fig6d/FigS4 mislabelling: heatmap is FigS4, accumulation curve is Fig6c, matching dissertation numbering\""
+echo "  git push"

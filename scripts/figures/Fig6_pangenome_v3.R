@@ -184,9 +184,9 @@ ggsave(file.path(OUT,"Fig6b_pangenome_frequency_v3.png"),
 ggsave(file.path(OUT,"Fig6b_pangenome_frequency_v3.pdf"),
        fig6b, width=9, height=6)
 
-ggsave(file.path(OUT,"Fig6d_pangenome_accumulation_v3.png"),
+ggsave(file.path(OUT,"Fig6c_pangenome_accumulation_v3.png"),
        fig6c, width=9, height=6, dpi=300, bg="white")
-ggsave(file.path(OUT,"Fig6d_pangenome_accumulation_v3.pdf"),
+ggsave(file.path(OUT,"Fig6c_pangenome_accumulation_v3.pdf"),
        fig6c, width=9, height=6)
 
 message("Fig6 v2 saved - composition, frequency, accumulation curve")

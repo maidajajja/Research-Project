@@ -245,7 +245,7 @@ htB <- Heatmap(t(mat_B),
 
 # ── Save ──────────────────────────────────────────────────────────────────────
 cat("Drawing heatmap...\n")
-png(file.path(OUT,"Fig6c_pangenome_heatmap_v4.png"),
+png(file.path(OUT,"FigS4_pangenome_heatmap_v4.png"),
     width=20, height=12, units="in", res=300, bg="white")
 draw(htA + htB,
      merge_legend=TRUE,
@@ -254,7 +254,7 @@ draw(htA + htB,
      column_title_gp=gpar(fontsize=16, fontface="bold"))
 dev.off()
 
-pdf(file.path(OUT,"Fig6c_pangenome_heatmap_v4.pdf"),
+pdf(file.path(OUT,"FigS4_pangenome_heatmap_v4.pdf"),
     width=20, height=12)
 draw(htA + htB,
      merge_legend=TRUE,
