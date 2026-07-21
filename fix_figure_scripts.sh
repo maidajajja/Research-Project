@@ -1,3 +1,41 @@
+#!/usr/bin/env bash
+# Fix the mismatch between FINAL_FIGURES/ and scripts/figures/.
+# Run this from the ROOT of your local clone (same place as reorganize_repo.sh ran).
+#
+# What it does:
+#   - Moves Fig5b_table.R from archive into scripts/figures/ (it's the ACTUAL script
+#     that generates FINAL_FIGURES/Fig5b_ST_country_table_FINAL - it was sitting in
+#     archive/, so that figure was not reproducible from the "final" scripts folder)
+#   - Renames Fig3a_virulence_heatmap_v2.R -> FigS3_virulence_heatmap_v2.R (it actually
+#     generates FigS3 output, not Fig3a - confirmed from its own ggsave() calls)
+#   - Archives 3 scripts whose output does NOT appear anywhere in FINAL_FIGURES/:
+#     FigS1_FastANI_QC.R, FigS2_SNP_heatmap.R, publication_plots_v2.R
+#   - Replaces the README's Final Figure Scripts table with one verified against each
+#     script's actual ggsave()/output filenames, not assumed from script names
+#
+# Does NOT commit or push - review with git status / git diff --cached --stat first.
+
+set -euo pipefail
+
+if [ ! -f "README.md" ] || [ ! -d "scripts/figures" ]; then
+  echo "Run this from the repo root, after reorganize_repo.sh has already been run and pushed." >&2
+  exit 1
+fi
+
+echo "== Moving Fig5b's real script into scripts/figures/ =="
+git mv scripts/archive/fig4_fig5_old_versions/Fig5b_table.R scripts/figures/Fig5b_table.R
+
+echo "== Renaming mislabelled virulence heatmap script =="
+git mv scripts/figures/Fig3a_virulence_heatmap_v2.R scripts/figures/FigS3_virulence_heatmap_v2.R
+
+echo "== Archiving 3 scripts whose output is not in FINAL_FIGURES/ =="
+git mv scripts/figures/FigS1_FastANI_QC.R scripts/archive/old_figure_versions/FigS1_FastANI_QC.R
+git mv scripts/figures/FigS2_SNP_heatmap.R scripts/archive/old_figure_versions/FigS2_SNP_heatmap.R
+git mv scripts/figures/publication_plots_v2.R scripts/archive/old_figure_versions/publication_plots_v2.R
+
+echo "== Updating README =="
+rm -f README.md
+cat > README.md << 'README_EOF'
 # Comparative Genomics and AMR Profiling of Klebsiella pneumoniae in Liver Disease Patients
 
 ## Project Overview
@@ -136,3 +174,12 @@ KCL CREATE HPC cluster (`/scratch/users/k22017808/KP_Research_Project/FINAL_FIGU
 Cluster: KCL CREATE HPC (hpc.create.kcl.ac.uk)
 Partition: msc_appbio
 Conda environments: myRenv (R packages), kleborate_env (Kleborate) - see `environment/` for full YAMLs
+README_EOF
+
+git add -A
+
+echo ""
+echo "Done. Review with:  git status   and   git diff --cached --stat"
+echo "Then commit, e.g.:"
+echo "  git commit -m \"Fix scripts/figures to match FINAL_FIGURES: recover Fig5b script, rename FigS3 script, archive 3 unused figure scripts, correct README table\""
+echo "  git push"
