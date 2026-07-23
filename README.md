@@ -100,22 +100,31 @@ This table maps each file in `FINAL_FIGURES/` to the script that actually genera
 against each script's `ggsave()`/output calls rather than assumed from filenames.
 
 | Final figure(s) | Script | Description |
-|-----------------|--------|--------------|
-| Fig1 | `scripts/05_phylogenetics/iqtree_final229.sh` + iTOL | Core-genome phylogeny |
-| Fig2_AMR_heatmap | `scripts/figures/Fig2_AMR_heatmap_v19.R` | AMR gene heatmap by ST |
-| Fig3b_virulence_bubble | `scripts/figures/Fig3b_virulence_bubble_v5.R` | Virulence prevalence bubble plot |
-| Fig4a_plasmid_replicons, Fig4b_IncHI1B_convergence | `scripts/figures/Fig4_v5.R` | Plasmid replicon prevalence by ST; IncHI1B in convergent vs non-convergent ST11 |
-| Fig5a_ST_over_time | `scripts/figures/Fig5a_v4.R` | ST distribution over time |
-| Fig5b_ST_country_table | `scripts/figures/Fig5b_table.R` | ST distribution by country |
-| Fig6a_pangenome_composition, Fig6b_pangenome_frequency, Fig6c_pangenome_accumulation, Fig6ab_pangenome (combined panel) | `scripts/figures/Fig6_pangenome_v3.R` | Pan-genome composition, gene-frequency distribution, and accumulation curve |
-| Fig7_convergence | `scripts/figures/Fig7_convergence_v3.R` | MDR-hypervirulent convergence bubble plot |
-| Fig8_convergent_plasmid | `scripts/figures/Fig8_convergent_plasmid_v4.R` | Convergent isolate heatmap |
-| Fig8b_convergent_integrated | `scripts/figures/Fig8b_convergent_integrated_v1.R` | Integrated convergence figure |
+| --- | --- | --- |
+| Fig1_taxonomy_schematic | (original schematic, not script-generated) | K. pneumoniae species complex vs. Enterobacterales, adapted from Wyres et al. (2020) |
+| Fig2_virulence_loci_schematic | (original schematic, not script-generated) | Chromosomal vs. plasmid-encoded virulence loci, adapted from Choby et al. (2020) |
+| Fig3_convergence_venn | (original schematic, not script-generated) | MDR/hypervirulence/convergence Venn diagram |
+| Fig4_phylogeny | `scripts/05_phylogenetics/iqtree_final229.sh` + iTOL | Core-genome phylogeny (previously Fig1) |
+| Fig5_AMR_heatmap | `scripts/figures/Fig2_AMR_heatmap_v19.R` | AMR gene heatmap by ST (previously Fig2_AMR_heatmap) |
+| Fig6_virulence_bubble | `scripts/figures/Fig3b_virulence_bubble_v5.R` | Virulence prevalence bubble plot (previously Fig3b_virulence_bubble) |
+| Fig7_plasmid_replicons | `scripts/figures/Fig4_v5.R` | Plasmid replicon prevalence by ST (previously Fig4a_plasmid_replicons) |
+| Fig8_IncHI1B_convergence | `scripts/figures/Fig4_v5.R` | IncHI1B in convergent vs non-convergent ST11 (previously Fig4b_IncHI1B_convergence) |
+| Fig9_ST_over_time | `scripts/figures/Fig5a_v4.R` | ST distribution over time (previously Fig5a_ST_over_time) |
+| Fig10_ST_country | `scripts/figures/Fig5b_table.R` | ST distribution by country (previously Fig5b_ST_country_table) |
+| Fig11a_pangenome_composition, Fig11b_pangenome_frequency | `scripts/figures/Fig6_pangenome_v3.R` | Pan-genome composition and gene-frequency distribution (previously Fig6a/Fig6b) |
+| Fig12_pangenome_accumulation | `scripts/figures/Fig6_pangenome_v3.R` | Pan-genome accumulation curve (previously Fig6c) |
+| Fig13_convergence | `scripts/figures/Fig7_convergence_v3.R` | MDR-hypervirulent convergence bubble plot (previously Fig7_convergence) |
+| Fig14_convergent_plasmid | `scripts/figures/Fig8_convergent_plasmid_v4.R` | Convergent isolate heatmap (previously Fig8_convergent_plasmid) |
 | FigS1_kraken2_QC | `scripts/figures/FigS1_Kraken2.R` | Kraken2 QC supplementary figure |
 | FigS2_FastANI_heatmap | `scripts/figures/FigS2_FastANI_v3.R` | FastANI supplementary heatmap |
-| FigS3_virulence_heatmap | `scripts/figures/FigS3_virulence_heatmap_v2.R` | Virulence loci heatmap (supplementary). Note: the script file was previously misnamed `Fig3a_virulence_heatmap_v2.R` despite generating FigS3 output; renamed for consistency. |
-| FigS4_pangenome_heatmap | `scripts/figures/FigS4_pangenome_heatmap_v4.R` | Pan-genome presence/absence heatmap by ST, core/soft-core/shell genes (supplementary). Note: this script and its output were previously misnamed `Fig6c_pangenome_heatmap`; the accumulation curve (now Fig6c) was previously misnamed `Fig6d`. Both were corrected to match the dissertation's actual figure numbering. |
-| FigS5_scoary_volcano | `scripts/figures/Fig_scoary_volcano_v2.R` | Scoary gene-association volcano plot (supplementary). Note: the original Scoary run in `12_Scoary/` used the pre-QC 234-genome dataset; this script and its output were regenerated against the corrected final229 dataset (`scoary_final229_corrected.sh`, `data/scoary_traits_ST23_final229.csv`) and are the version reported in the dissertation. |
+| FigS3_virulence_heatmap | `scripts/figures/FigS3_virulence_heatmap_v2.R` | Virulence loci heatmap, per-isolate (supplementary) |
+| FigS4_pangenome_heatmap | `scripts/figures/FigS4_pangenome_heatmap_v4.R` | Pan-genome presence/absence heatmap by ST (supplementary) |
+| FigS5_scoary_volcano | `scripts/figures/Fig_scoary_volcano_v2.R` | Scoary gene-association volcano plot, corrected final229 rerun (supplementary) |
+
+Note: Fig1-Fig3 are original conceptual schematics (not pipeline outputs), inserted directly into the
+dissertation Introduction. Figure numbering above reflects the dissertation's final sequence after
+these three figures were added; all pipeline scripts and their outputs are unchanged, only the
+figure numbers used to refer to them have shifted.
 
 `scripts/figures/run_all_plots.sh` regenerates the full figure set in one pass.
 
