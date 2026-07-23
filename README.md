@@ -1,4 +1,4 @@
-# Comparative Genomic Analysis of Klebsiella pneumoniae in Liver Disease Patients
+# Genomic epidemiology of Klebsiella pneumoniae in liver disease patients: lineage-specific convergence of antimicrobial resistance and hypervirulence
 
 ## Project Overview
 MSc Applied Bioinformatics
