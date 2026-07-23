@@ -87,7 +87,7 @@ since several tools (e.g. Kraken2, Bakta) were re-run at more than one pipeline 
 
 ## Key Results
 - 59 distinct sequence types identified; ST23 dominant (n=76, 33%)
-- ST11 carried the broadest acquired AMR profile, enriched for blaKPC-2
+- ST258 and ST11 carried the broadest acquired AMR profiles (mean 19.0 and 18.6 genes/isolate respectively), both enriched for carbapenemase and ESBL genes
 - 20/229 isolates (8.7%) met convergence criteria (virulence score >=4, resistance score >=2)
 - Convergent isolates predominantly ST11 (n=17/20)
 - Open pan-genome: 14,051 total genes; 3,769 core genes (26.8%)
