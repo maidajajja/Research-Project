@@ -1,4 +1,4 @@
-# Genomic epidemiology of Klebsiella pneumoniae in liver disease patients: lineage-specific convergence of antimicrobial resistance and hypervirulence
+# Genomic epidemiology of Klebsiella pneumoniae  in liver disease patients: lineage-specific convergence of antimicrobial resistance and hypervirulence
 
 ## Project Overview
 MSc Applied Bioinformatics
