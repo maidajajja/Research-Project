@@ -1,13 +1,13 @@
-# Comparative Genomics and AMR Profiling of Klebsiella pneumoniae in Liver Disease Patients
+# Comparative Genomic Analysis of Klebsiella pneumoniae in Liver Disease Patients
 
 ## Project Overview
-MSc Applied Bioinformatics | King's College London | 2026
-Supervisor: Dr Ellis Paintsil
-Institution: Roger Williams Institute of Liver Studies, KCL
+MSc Applied Bioinformatics
+Supervisor: Prof Debbie Shawcross and Dr Ellis Paintsil
+Institution: Roger Williams Institute of Liver Studies, King's College London
 
 This project characterises the population structure, antimicrobial resistance, virulence determinants,
 and MDR-hypervirulent convergence of Klebsiella pneumoniae isolated from liver disease patients,
-using a publicly available genomic dataset of 229 isolates.
+using a publicly available genomic dataset
 
 ---
 
